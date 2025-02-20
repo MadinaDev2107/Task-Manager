@@ -62,7 +62,7 @@ function OrderBoard() {
         onClick={() => setIsModalOpen(true)}
         className="btn btn-primary mt-2"
       >
-        Add order
+        Add task
       </button>
       <h2 className="text-center mb-4">Task Manager</h2>
       <div className="row">
@@ -143,7 +143,7 @@ function OrderBoard() {
             </select>
           </div>
           <button type="submit" className="btn btn-success w-100">
-            Add Order
+            Save
           </button>
         </form>
       </Rodal>
