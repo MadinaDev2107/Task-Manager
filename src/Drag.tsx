@@ -36,6 +36,10 @@ function OrderBoard() {
       );
     });
   };
+  const closeModal = () => {
+    setIsModalOpen(false);
+    reset();
+  };
 
   const removeOrder = (id: number) => {
     apicall(`/orders/${id}`, "DELETE", "").then(() => {
@@ -110,15 +114,16 @@ function OrderBoard() {
           </div>
         ))}
       </div>
-      <Rodal
-        height={400}
-        visible={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-      >
+      <Rodal height={400} visible={isModalOpen} onClose={closeModal}>
         <form onSubmit={handleSubmit(addOrder)} className="p-3">
           <div className="mb-3">
             <label className="form-label">Title</label>
-            <input {...register("title")} className="form-control" required />
+            <input
+              {...register("title")}
+              placeholder="Add task...."
+              className="form-control"
+              required
+            />
           </div>
           <div className="mb-3">
             <label className="form-label">Time</label>
