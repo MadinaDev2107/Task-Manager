@@ -9,7 +9,7 @@ interface Order {
   id: number;
   title: string;
   time: string;
-  status: "paid" | "inprogress" | "ready";
+  status: "todo" | "inprogress" | "ready";
 }
 
 function OrderBoard() {
@@ -66,7 +66,7 @@ function OrderBoard() {
       </button>
       <h2 className="text-center mb-4">Task Manager</h2>
       <div className="row">
-        {["paid", "inprogress", "ready"].map((status) => (
+        {["todo", "inprogress", "ready"].map((status) => (
           <div
             key={status}
             className="col-md-4"
@@ -76,7 +76,7 @@ function OrderBoard() {
             <div style={{ height: "400px" }} className="  card w-75 mx-auto ">
               <div
                 className={`card-header text-center text-white bg-${
-                  status === "paid"
+                  status === "todo"
                     ? "warning"
                     : status === "inprogress"
                     ? "info"
@@ -137,7 +137,7 @@ function OrderBoard() {
           <div className="mb-3">
             <label className="form-label">Status</label>
             <select {...register("status")} className="form-control">
-              <option value="paid">Paid</option>
+              <option value="todo">Todo</option>
               <option value="inprogress">In Progress</option>
               <option value="ready">Ready</option>
             </select>
