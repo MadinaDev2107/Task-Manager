@@ -16,44 +16,63 @@ function OrderBoard() {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [orders, setOrders] = useState<Order[]>([]);
   const { register, handleSubmit, reset } = useForm<Omit<Order, "id">>();
-
+  const [ids, setID] = useState<number>();
+  const a = localStorage.getItem("id");
   useEffect(() => {
-    apicall("/orders", "GET", "").then((res) => setOrders(res.data));
-  }, []);
+    if (a) {
+      apicall(`/orders?userId=${a}`, "GET", "")
+        .then((res) => setOrders(res.data))
+        .catch((err) => console.error("Fetch error:", err));
+    }
+  }, [a]);
 
   const addOrder = (data: Omit<Order, "id">) => {
-    apicall("/orders", "POST", data).then((res) => {
-      setOrders([...orders, res.data]);
-      reset();
-      setIsModalOpen(false);
-    });
+    apicall("/orders", "POST", {
+      ...data,
+      userId: a,
+    })
+      .then((res) => {
+        setOrders((prev) => [...prev, res.data]);
+        reset();
+        setIsModalOpen(false);
+      })
+      .catch((err) => console.error("Add error:", err));
   };
 
   const updateOrderStatus = (id: number, status: Order["status"]) => {
-    apicall(`/orders/${id}`, "PATCH", { status }).then(() => {
-      setOrders((prev) =>
-        prev.map((order) => (order.id === id ? { ...order, status } : order))
-      );
-    });
+    apicall(`/orders/${id}`, "PATCH", { status })
+      .then(() => {
+        setOrders((prev) =>
+          prev.map((order) => (order.id === id ? { ...order, status } : order))
+        );
+      })
+      .catch((err) => console.error("Update error:", err));
   };
+
   const closeModal = () => {
     setIsModalOpen(false);
     reset();
   };
 
   const removeOrder = (id: number) => {
-    apicall(`/orders/${id}`, "DELETE", "").then(() => {
-      setOrders(orders.filter((order) => order.id !== id));
-    });
+    console.log(id);
+
+    apicall(`/orders/${id}`, "DELETE", "")
+      .then(() => {
+        setOrders((prev) => prev.filter((order) => order.id !== id));
+      })
+      .catch((err) => console.error("Remove error:", err));
   };
 
   const handleDragStart = (e: React.DragEvent, id: number) => {
-    e.dataTransfer.setData("id", id.toString());
+
+    setID(id);
+    e.dataTransfer.setData("text/plain", id.toString());
   };
 
   const handleDrop = (e: React.DragEvent, status: Order["status"]) => {
-    const id = Number(e.dataTransfer.getData("id"));
-    updateOrderStatus(id, status);
+    e.preventDefault();
+    updateOrderStatus(ids!, status);
   };
 
   return (
@@ -73,7 +92,7 @@ function OrderBoard() {
             onDragOver={(e) => e.preventDefault()}
             onDrop={(e) => handleDrop(e, status as Order["status"])}
           >
-            <div style={{ height: "400px" }} className="  card w-75 mx-auto ">
+            <div style={{ height: "400px" }} className="card w-75 mx-auto">
               <div
                 className={`card-header text-center text-white bg-${
                   status === "todo"
@@ -85,10 +104,9 @@ function OrderBoard() {
               >
                 {status.toUpperCase()}
               </div>
-
               <div
                 style={{ height: "400px" }}
-                className=" overflow-auto card-body"
+                className="overflow-auto card-body"
               >
                 {orders
                   .filter((order) => order.status === status)
@@ -99,8 +117,8 @@ function OrderBoard() {
                       draggable
                       onDragStart={(e) => handleDragStart(e, order.id)}
                     >
-                      <p> Task:{order.title}</p>
-                      <p>Time:{order.time}</p>
+                      <p>Task: {order.title}</p>
+                      <p>Time: {order.time}</p>
                       <button
                         className="btn btn-danger btn-sm"
                         onClick={() => removeOrder(order.id)}
@@ -120,7 +138,7 @@ function OrderBoard() {
             <label className="form-label">Title</label>
             <input
               {...register("title")}
-              placeholder="Add task...."
+              placeholder="Add task..."
               className="form-control"
               required
             />
@@ -136,7 +154,11 @@ function OrderBoard() {
           </div>
           <div className="mb-3">
             <label className="form-label">Status</label>
-            <select {...register("status")} className="form-control">
+            <select
+              {...register("status")}
+              className="form-control"
+              defaultValue="todo"
+            >
               <option value="todo">Todo</option>
               <option value="inprogress">In Progress</option>
               <option value="ready">Ready</option>

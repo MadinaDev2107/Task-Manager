@@ -1,10 +1,10 @@
 import axios from "axios";
 
-export function apicall(url: string, method: string, user: unknown) {
+export function apicall(url: string, method: string, data: unknown) {
   return axios({
-    baseURL: "https://fakebackend-gm5s.onrender.com",
+    baseURL: "http://localhost:3000",
     url,
     method,
-    data: user,
+    data,
   });
 }
