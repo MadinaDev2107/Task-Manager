@@ -26,7 +26,7 @@ function App() {
 
   return (
     <div>
-      <div className="text-white d-flex justify-content-between p-3 bg-dark align-items-center">
+      <div className="text-white d-flex justify-content-between  bg-dark align-items-center">
         <Link
           style={{
             textDecoration: "none",

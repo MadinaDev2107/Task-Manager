@@ -64,10 +64,8 @@ function OrderBoard() {
       .catch((err) => console.error("Remove error:", err));
   };
 
-  const handleDragStart = (e: React.DragEvent, id: number) => {
-
+  const handleDragStart = (id: number) => {
     setID(id);
-    e.dataTransfer.setData("text/plain", id.toString());
   };
 
   const handleDrop = (e: React.DragEvent, status: Order["status"]) => {
@@ -84,7 +82,7 @@ function OrderBoard() {
         Add task
       </button>
       <h2 className="text-center mb-4">Task Manager</h2>
-      <div className="row">
+      <div className="row w-100">
         {["todo", "inprogress", "ready"].map((status) => (
           <div
             key={status}
@@ -115,7 +113,7 @@ function OrderBoard() {
                       key={order.id}
                       className="p-2 border rounded mb-2 d-flex justify-content-between"
                       draggable
-                      onDragStart={(e) => handleDragStart(e, order.id)}
+                      onDragStart={() => handleDragStart(order.id)}
                     >
                       <p>Task: {order.title}</p>
                       <p>Time: {order.time}</p>
