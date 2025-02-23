@@ -18,7 +18,6 @@ function App() {
     const token = localStorage.getItem("id");
     if (!token) {
       if (location.pathname === "/cabinet") {
-        navigate("/login");
         navigate("/");
       }
     }
