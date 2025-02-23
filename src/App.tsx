@@ -42,9 +42,6 @@ function App() {
           <Link to={"/"} className="btn btn-primary btn-sm m-2">
             Login
           </Link>
-          <Link to={"/cabinet"} className="btn btn-warning btn-sm m-2">
-            Cabinet
-          </Link>
         </div>
       </div>
       <Routes>
